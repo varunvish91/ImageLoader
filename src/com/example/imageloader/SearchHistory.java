@@ -21,7 +21,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SearchView;
 
-//main Search activity, users interactin with this activity can search for google images
+//main Search activity, users interacting with this activity can search for google images
 //scrolling to the bottom will request more images
 public class SearchHistory extends Activity implements StreamDecorator, OnItemClickListener {
     private static String QUERY = "query";
