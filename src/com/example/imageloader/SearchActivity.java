@@ -151,7 +151,7 @@ public class SearchActivity extends Activity implements StreamDecorator, OnScrol
         @Override
         protected void onPreExecute() {
             _dialog = new ProgressDialog(_context);
-            _dialog.setTitle("Getting dat");
+            _dialog.setTitle("Getting data");
             _dialog.setMessage("Please wait...");
             _dialog.setCancelable(false);
             _dialog.setIndeterminate(true);
