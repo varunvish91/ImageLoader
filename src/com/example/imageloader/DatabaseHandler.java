@@ -1,8 +1,9 @@
 package com.example.imageloader;
 
 import java.text.SimpleDateFormat;
-import java.util.Currency;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,19 +11,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
+//Database for writing to local storage
+//stores past searches
 public class DatabaseHandler extends SQLiteOpenHelper {
-    
     private static int DATABASE_VERSION = 1;
-    
-    //databbase name
     private static String DATABASE_NAME = "GooleImageSearch";
-    
-    //table name
     private static String TABLE_NAME = "SearchHistory";
-
-    //columns
     private static String ID = "id";
     private static String QUERY = "query";
     private static String DATE_INSERTED = "DateInserted"; //used so we can sort
@@ -36,13 +31,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //create the table
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_NAME + "(" + ID + " INTEGER PRIMARY KEY," + QUERY + " TEXT," +  DATE_INSERTED + " DATETIME" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
-        
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        
+
         // Create tables again
         onCreate(db);
     }
@@ -59,25 +53,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
     
     //returns all queries if null, or returns similiar search results for query paramater
-    public String[] getQueries(String query) {
+    public List<String> getQueries(String query) {
         SQLiteDatabase db = getReadableDatabase();
-        String[] columns = new String[] {QUERY};
         String[] selectionArgs = new String[] {query};
+        ArrayList<String> results = new ArrayList<String>();
         Cursor cursor;
+   
         if(query == null) {
-            cursor = db.query(TABLE_NAME, columns, null, null, null, null, DATE_INSERTED + " DESC");
+            String sql = "SELECT DISTINCT " + QUERY + " FROM " + TABLE_NAME + " ORDER BY " + DATE_INSERTED + " DESC";
+            cursor = db.rawQuery(sql, null);
         }
         else {
-            cursor = db.query(TABLE_NAME, columns, null, selectionArgs, null, null, DATE_INSERTED + "DESC");
+            String sql = "SELECT DISTINCT " + QUERY + " FROM " + TABLE_NAME + " WHERE " + QUERY + "=?" + " ORDER BY " + DATE_INSERTED + " DESC";
+            cursor = db.rawQuery(sql, selectionArgs);
         }
         if(cursor.moveToFirst()) {
             do {
                 String oldQuery = cursor.getString(0);
-                Log.e("VVISH", oldQuery);
+                results.add(oldQuery);
                 
             } while(cursor.moveToNext());
         }
-        return null;
+        return results;
     }
-    
 }

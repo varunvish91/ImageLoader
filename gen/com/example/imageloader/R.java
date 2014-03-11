@@ -14,15 +14,19 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_search=0x7f080004;
+        public static final int action_search=0x7f080006;
         public static final int gridContent=0x7f080003;
+        public static final int history=0x7f080007;
         public static final int itemImage=0x7f080000;
         public static final int searchActivityRoot=0x7f080001;
+        public static final int searchHistory=0x7f080005;
+        public static final int searchHistoryResults=0x7f080004;
         public static final int searchResult=0x7f080002;
     }
     public static final class layout {
         public static final int item=0x7f030000;
         public static final int search_activity=0x7f030001;
+        public static final int search_history=0x7f030002;
     }
     public static final class menu {
         public static final int search_activity_menu=0x7f070000;

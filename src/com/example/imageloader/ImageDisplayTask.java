@@ -13,7 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.ImageView;
 
-//Task for downloading images via URL
+//Task is responsible for downloading the image into a bitmap, and passing it back via handler
 public class ImageDisplayTask implements Runnable {
     private Context _context;
     private ImageView _reference;
@@ -48,7 +48,6 @@ public class ImageDisplayTask implements Runnable {
             _referenceContent = new BitmapDrawable(_context.getResources(),myBitmap);
             Message msg = _handler.obtainMessage(1, this);
             _handler.sendMessage(msg);
-            
         }
         catch(Exception th){
             th.printStackTrace();

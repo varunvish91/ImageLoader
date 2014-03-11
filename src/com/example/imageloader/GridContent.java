@@ -7,21 +7,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-
-public class GridContent extends GridView implements ContentView, android.widget.AdapterView.OnItemClickListener {
-    private StreamDecorator _outputStream; //use the stream decorator for writing to data
+//Custom GridView. updates its state based on JSON data that comes via the update call
+public class GridContent extends GridView implements ContentView {
     private List<ImageContent> _content = null;
-    private Context _context;
+    private ImageAdapter _adapter = null;
     private static String REQUEST_DATA = "responseData";
     private static String RESULTS = "results";
     private static String TITLE = "titleNoFormatting";
@@ -29,32 +24,24 @@ public class GridContent extends GridView implements ContentView, android.widget
     
     public GridContent(Context context, AttributeSet attrs) {
         super(context, attrs);
-        _context = context;
-        _content = new ArrayList<ImageContent>();
-
-    }
-    public GridContent(Context context) {
-        super(context);
-        _context = context;
-        _content = new ArrayList<ImageContent>();
-
-    }
-    public GridContent(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        _context = context;
-        _content = new ArrayList<ImageContent>();
-
     }
     
-    public void setStreamDecorator(StreamDecorator decorator) {
-        _outputStream = decorator;
-        
+    public GridContent(Context context) {
+        super(context);
     }
-
+    
+    public GridContent(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+    
+    public void init() {
+        _content = new ArrayList<ImageContent>();
+        _adapter = new ImageAdapter(getContext());
+    }
+    
+    //Change state to represent JSON data sent via root view
     @Override
     public void update(final JSONObject content) {
-        _content = new ArrayList<ImageContent>();
-        //parse the content and create the arraylist
         JSONObject responseData;
         try {
             responseData = content.getJSONObject(REQUEST_DATA);
@@ -66,19 +53,20 @@ public class GridContent extends GridView implements ContentView, android.widget
                 ImageContent item = new ImageContent(title, url);
                 _content.add(item);
             }
-            ImageAdapter adapter = new ImageAdapter(_context, _content);
-            this.setAdapter(adapter);
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
+            _adapter.addAll(_content);
+            _adapter.notifyDataSetChanged();
+            setAdapter(_adapter);
+        } 
+        catch (JSONException e) {
+            //keep the GridContent in its default state if some parsing error occurs
             e.printStackTrace();
         }
     }
 
+    //clear the parsed data in the gridview
+    //used when getting more data
     @Override
-    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-    
+    public void clear() {
+        _content.clear();
     }
-    
-    //parses the json data into the content list via the messageHandler
-    
 }

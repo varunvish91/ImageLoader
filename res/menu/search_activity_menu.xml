@@ -5,6 +5,10 @@
           android:icon="@drawable/ic_launcher"
           android:title="search"
           android:actionViewClass="android.widget.SearchView"
-          android:showAsAction="ifRoom"/>
+          android:showAsAction="always"/>
+    
+    <item android:id="@+id/history"
+        android:title="History"
+        android:showAsAction="always" />
      
 </menu>
